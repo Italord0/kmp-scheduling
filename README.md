@@ -5,7 +5,7 @@ Compose Multiplatform app simulating Calendly scheduling
 
 ## Stack
 
-- [MMVM Architecture](https://developer.android.com/topic/libraries/architecture/viewmodel)
+- [MVVM Architecture](https://developer.android.com/topic/libraries/architecture/viewmodel)
 
 - [ktor](https://ktor.io/docs/client-create-multiplatform-application.html)
 
