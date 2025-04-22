@@ -11,7 +11,7 @@ Compose Multiplatform app simulating Calendly scheduling
 
 - [Compose Navigation](https://developer.android.com/develop/ui/compose/navigation)
 
-- [Calendar library](https://github.com/WojciechOsak/Calendar) by [@WojciechOsak](https://github.com/WojciechOsak)
+- [Calendar library](https://github.com/kizitonwose/Calendar) by [@kizitonwose](https://github.com/kizitonwose/Calendar)
 
 - [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime)
 
