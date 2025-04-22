@@ -43,10 +43,12 @@ fun CalendarScreen(
                 )
             },
             onDateClick = { clickedDay ->
-                println(clickedDay)
+                mainViewModel.selectDate(clickedDay)
                 navController.navigate("Time")
             })
-        TimeZoneSelector {
+        TimeZoneSelector(
+            screenState = screenState
+        ) {
             mainViewModel.changeTimeZone(TimeZone.of(it))
         }
     }

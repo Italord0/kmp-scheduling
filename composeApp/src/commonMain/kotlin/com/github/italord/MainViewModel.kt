@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.italord.model.AvailableTimesResponse
 import com.github.italord.model.ScreenState
+import com.kizitonwose.calendar.core.CalendarDay
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 class MainViewModel : ViewModel() {
@@ -52,6 +54,22 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             _screenState.update { screenState ->
                 screenState.copy(timeZone = timeZone)
+            }
+        }
+    }
+
+    fun selectDate(calendarDay: CalendarDay) {
+        viewModelScope.launch {
+            _screenState.update { screenState ->
+                screenState.copy(dateSelected = calendarDay)
+            }
+        }
+    }
+
+    fun selectTime(instant: Instant) {
+        viewModelScope.launch {
+            _screenState.update { screenState ->
+                screenState.copy(timeSelected = "$instant")
             }
         }
     }

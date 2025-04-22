@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.github.italord.model.ScreenState
 import kmp_scheduling.composeapp.generated.resources.Res
 import kmp_scheduling.composeapp.generated.resources.ic_globe
 import kotlinx.datetime.Clock
@@ -41,8 +43,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @Composable
-fun TimeZoneSelector(onTimeZoneSelected: (timeZoneId : String) -> Unit = { }) {
-    var selectedTimeZone by remember { mutableStateOf(TimeZone.currentSystemDefault().id) }
+fun TimeZoneSelector(
+    screenState: ScreenState,
+    onTimeZoneSelected: (timeZoneId: String) -> Unit = { }
+) {
+    var selectedTimeZone by remember { mutableStateOf(screenState.timeZone.id) }
     var isDialogOpen by remember { mutableStateOf(false) }
 
     Column(
@@ -66,21 +71,20 @@ fun TimeZoneSelector(onTimeZoneSelected: (timeZoneId : String) -> Unit = { }) {
                 .clickable { isDialogOpen = true }
         ) {
             Icon(
+                modifier = Modifier.size(24.dp),
                 painter = painterResource(Res.drawable.ic_globe),
-                contentDescription = "Globe icon",
-                tint = Color(0xFF1A2D4A)
+                contentDescription = null,
+                tint = Color.Gray
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "$selectedTimeZone (${currentTimeFor(selectedTimeZone)})",
-                fontSize = 14.sp,
-                color = Color(0xFF1A2D4A)
+                fontSize = 14.sp
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Dropdown icon",
-                tint = Color(0xFF1A2D4A)
+                contentDescription = null
             )
         }
     }
@@ -153,14 +157,14 @@ fun currentTimeFor(timeZoneId: String): String {
 
 @Preview
 @Composable
-fun TimeZoneSelectorPreview(){
+fun TimeZoneSelectorPreview() {
     Surface(modifier = Modifier.background(Color.White)) {
-        TimeZoneSelector {  }
+        TimeZoneSelector(screenState = ScreenState()) { }
     }
 }
 
 @Preview
 @Composable
-fun TimeZoneDialogPreview(){
+fun TimeZoneDialogPreview() {
     TimeZoneDialog(onDismiss = {}, onTimeZoneSelected = { })
 }

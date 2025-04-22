@@ -1,9 +1,13 @@
 package com.github.italord
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -22,6 +26,20 @@ fun App() {
     LaunchedEffect(Unit) { mainViewmodel.getDatesFromMonthYear("Apr2025") }
 
     val state = mainViewmodel.screenState.collectAsState().value
+    val submittedValue = remember { mutableStateOf<String?>(null) }
+
+    if (submittedValue.value != null) {
+        AlertDialog(
+            onDismissRequest = { submittedValue.value = null },
+            confirmButton = {
+                TextButton(onClick = { submittedValue.value = null }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Payload") },
+            text = { Text("${submittedValue.value}") }
+        )
+    }
 
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -32,10 +50,27 @@ fun App() {
             CalendarScreen(navController, mainViewmodel, state)
         }
         composable(route = "Time") {
-            TimeScreen(navController)
+            TimeScreen(
+                mainViewmodel,
+                state,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onTimeSelected = {
+                    mainViewmodel.selectTime(it)
+                    navController.navigate("Details")
+                }
+            )
         }
         composable(route = "Details") {
-            DetailsScreen(navController)
+            DetailsScreen(
+                state = state,
+                onBack = { navController.popBackStack() },
+                onSubmit = {
+                    submittedValue.value = it
+                    println(it)
+                }
+            )
         }
     }
 

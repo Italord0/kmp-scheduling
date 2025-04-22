@@ -58,10 +58,11 @@ fun TopSectionComposable() {
             text = "30 Minute Interview",
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
         )
-        CallInformation(icon = Res.drawable.ic_clock, "30 min")
+        CallInformation(modifier = Modifier.padding(horizontal = 40.dp),icon = Res.drawable.ic_clock, text = "30 min")
         Spacer(modifier = Modifier.height(8.dp))
         CallInformation(
-            video = true,
+            modifier = Modifier.padding(horizontal = 40.dp),
+            expanded = true,
             icon = Res.drawable.ic_video,
             text = "Web conferencing details provided upon confirmation."
         )
@@ -73,14 +74,14 @@ fun TopSectionComposable() {
 }
 
 @Composable
-private fun CallInformation(icon: DrawableResource, text: String, video: Boolean = false) {
+fun CallInformation(modifier : Modifier = Modifier, icon: DrawableResource, text: String, expanded: Boolean = false) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
             Image(
-                modifier = Modifier.padding(horizontal = 4.dp).size(if (video) 18.dp else 14.dp),
+                modifier = Modifier.padding(horizontal = 4.dp).size(if (expanded) 18.dp else 14.dp),
                 painter = painterResource(resource = icon),
                 colorFilter = ColorFilter.tint(color = Color.Gray),
                 contentScale = ContentScale.Crop,
