@@ -1,37 +1,80 @@
 package com.github.italord
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-
-import kmp_scheduling.composeapp.generated.resources.Res
-import kmp_scheduling.composeapp.generated.resources.compose_multiplatform
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.github.italord.screens.CalendarScreen
+import com.github.italord.screens.DetailsScreen
+import com.github.italord.screens.TimeScreen
 
 @Composable
-@Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+
+    val navController = rememberNavController()
+    val mainViewmodel = remember { MainViewModel() }
+
+    LaunchedEffect(Unit) { mainViewmodel.getDatesFromMonthYear() }
+
+    val screenState = mainViewmodel.screenState.collectAsState().value
+    val submittedValue = remember { mutableStateOf<String?>(null) }
+
+    if (submittedValue.value != null) {
+        AlertDialog(
+            onDismissRequest = { submittedValue.value = null },
+            confirmButton = {
+                TextButton(onClick = { submittedValue.value = null }) {
+                    Text("OK")
                 }
-            }
+            },
+            title = { Text("Payload") },
+            text = { Text("${submittedValue.value}") }
+        )
+    }
+
+    NavHost(
+        modifier = Modifier.fillMaxSize(),
+        navController = navController,
+        startDestination = "Calendar"
+    ) {
+        composable(route = "Calendar") {
+            CalendarScreen(
+                mainViewModel = mainViewmodel,
+                screenState = screenState,
+                onDateSelected = {
+                    mainViewmodel.selectDate(it)
+                    navController.navigate("Time")
+                })
+        }
+        composable(route = "Time") {
+            TimeScreen(
+                mainViewModel = mainViewmodel,
+                screenState = screenState,
+                onBack = { navController.popBackStack() },
+                onTimeSelected = {
+                    mainViewmodel.selectTime(it)
+                    navController.navigate("Details")
+                }
+            )
+        }
+        composable(route = "Details") {
+            DetailsScreen(
+                state = screenState,
+                onBack = { navController.popBackStack() },
+                onSubmit = {
+                    submittedValue.value = it
+                    println(it)
+                }
+            )
         }
     }
 }
