@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.italord.model.AvailableTimesResponse
 import com.github.italord.model.ScreenState
 import com.kizitonwose.calendar.compose.CalendarLayoutInfo
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -112,32 +112,38 @@ fun CalendarComposable(
                     state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.previousMonth)
                 }
             })
-        HorizontalCalendar(
-            modifier = modifier.padding(horizontal = 32.dp),
-            state = state,
-            dayContent = { calendarDay ->
-                Day(
-                    calendarDay,
-                    availableDatesState.value.contains(calendarDay.date)
-                ) { day ->
-                    onDateClick(day)
-                }
-            },
-            monthHeader = {
-                Row {
-                    for (dayOfWeek in daysOfWeek) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center,
-                            fontSize = 10.sp,
-                            color = Color.Gray,
-                            text = dayOfWeek.name.take(3),
-                            fontWeight = FontWeight.Medium,
-                        )
+        Box(contentAlignment = Alignment.Center) {
+            if (screenState.isLoading) {
+                CircularProgressIndicator()
+            }
+            HorizontalCalendar(
+                modifier = modifier.padding(horizontal = 32.dp),
+                state = state,
+                dayContent = { calendarDay ->
+                    Day(
+                        calendarDay,
+                        availableDatesState.value.contains(calendarDay.date)
+                    ) { day ->
+                        onDateClick(day)
+                    }
+                },
+                monthHeader = {
+                    Row {
+                        for (dayOfWeek in daysOfWeek) {
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center,
+                                fontSize = 10.sp,
+                                color = Color.Gray,
+                                text = dayOfWeek.name.take(3),
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
+
     }
 }
 

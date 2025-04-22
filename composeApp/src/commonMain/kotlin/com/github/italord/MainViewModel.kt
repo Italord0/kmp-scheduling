@@ -16,12 +16,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class MainViewModel : ViewModel() {
     private val _screenState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState())
     val screenState: StateFlow<ScreenState> = _screenState.asStateFlow()
+
+    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val month = currentDateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }
+    val formattedCurrentMonth = "$month${currentDateTime.year}"
 
     private val httpClient: HttpClient = HttpClient {
         install(ContentNegotiation) {
@@ -29,7 +35,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun getDatesFromMonthYear(monthYear: String) {
+    fun getDatesFromMonthYear(monthYear: String = formattedCurrentMonth) {
         viewModelScope.launch {
             _screenState.update { screenState ->
                 screenState.copy(isLoading = true)
@@ -46,6 +52,9 @@ class MainViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 println(e)
+                _screenState.update { screenState ->
+                    screenState.copy(isLoading = false)
+                }
             }
         }
     }

@@ -10,19 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
-import androidx.navigation.NavController
 import com.github.italord.MainViewModel
 import com.github.italord.components.CalendarComposable
 import com.github.italord.components.TimeZoneSelector
 import com.github.italord.components.TopSectionComposable
 import com.github.italord.model.ScreenState
+import com.kizitonwose.calendar.core.CalendarDay
 import kotlinx.datetime.TimeZone
 
 @Composable
 fun CalendarScreen(
-    navController: NavController,
     mainViewModel: MainViewModel,
-    screenState: ScreenState
+    screenState: ScreenState,
+    onDateSelected: (calendarDay: CalendarDay) -> Unit = { }
 ) {
     Column(
         modifier = Modifier
@@ -43,8 +43,7 @@ fun CalendarScreen(
                 )
             },
             onDateClick = { clickedDay ->
-                mainViewModel.selectDate(clickedDay)
-                navController.navigate("Time")
+                onDateSelected(clickedDay)
             })
         TimeZoneSelector(
             screenState = screenState

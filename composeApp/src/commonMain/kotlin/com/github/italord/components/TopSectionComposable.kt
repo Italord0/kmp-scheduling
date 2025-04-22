@@ -58,6 +58,7 @@ fun TopSectionComposable() {
             text = "30 Minute Interview",
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
         )
+        Spacer(modifier = Modifier.height(8.dp))
         CallInformation(modifier = Modifier.padding(horizontal = 40.dp),icon = Res.drawable.ic_clock, text = "30 min")
         Spacer(modifier = Modifier.height(8.dp))
         CallInformation(

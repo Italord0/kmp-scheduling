@@ -23,9 +23,9 @@ fun App() {
     val navController = rememberNavController()
     val mainViewmodel = remember { MainViewModel() }
 
-    LaunchedEffect(Unit) { mainViewmodel.getDatesFromMonthYear("Apr2025") }
+    LaunchedEffect(Unit) { mainViewmodel.getDatesFromMonthYear() }
 
-    val state = mainViewmodel.screenState.collectAsState().value
+    val screenState = mainViewmodel.screenState.collectAsState().value
     val submittedValue = remember { mutableStateOf<String?>(null) }
 
     if (submittedValue.value != null) {
@@ -47,15 +47,19 @@ fun App() {
         startDestination = "Calendar"
     ) {
         composable(route = "Calendar") {
-            CalendarScreen(navController, mainViewmodel, state)
+            CalendarScreen(
+                mainViewModel = mainViewmodel,
+                screenState = screenState,
+                onDateSelected = {
+                    mainViewmodel.selectDate(it)
+                    navController.navigate("Time")
+                })
         }
         composable(route = "Time") {
             TimeScreen(
-                mainViewmodel,
-                state,
-                onBack = {
-                    navController.popBackStack()
-                },
+                mainViewModel = mainViewmodel,
+                screenState = screenState,
+                onBack = { navController.popBackStack() },
                 onTimeSelected = {
                     mainViewmodel.selectTime(it)
                     navController.navigate("Details")
@@ -64,7 +68,7 @@ fun App() {
         }
         composable(route = "Details") {
             DetailsScreen(
-                state = state,
+                state = screenState,
                 onBack = { navController.popBackStack() },
                 onSubmit = {
                     submittedValue.value = it
@@ -73,5 +77,4 @@ fun App() {
             )
         }
     }
-
 }

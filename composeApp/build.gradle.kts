@@ -48,8 +48,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.calendar)
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.navigation.compose)
             //ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
